@@ -34,14 +34,14 @@ class TravelApp(ctk.CTk):
         }
 
         self.DISCOUNTS = {
-            "Borobudur": 0.10,        # 10%
-            "Tanah Lot": 0.15,        # 15%
-            "Raja Ampat": 0.10,       # 10%
-            "Gunung Rinjani": 0.15,   # 15%
-            "Candi Prambanan": 0.00   # tidak ada diskon
+            "Borobudur": 0.10,        
+            "Tanah Lot": 0.15,         
+            "Raja Ampat": 0.10,       
+            "Gunung Rinjani": 0.15,  
+            "Candi Prambanan": 0.00   
         }
 
-        # active discounts only if user clicks discount button
+        #tombol disc di aktifkan
         self.active_discounts = {
             "Borobudur": False,
             "Tanah Lot": False,
@@ -53,7 +53,7 @@ class TravelApp(ctk.CTk):
         # ---------- Files ----------
         self.history_csv = "ticket_history.csv"
         self.csv_path = "user_reg.csv"
-        # ensure files exist
+        
         if not os.path.isfile(self.history_csv):
             with open(self.history_csv, "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
@@ -64,17 +64,15 @@ class TravelApp(ctk.CTk):
                 writer = csv.writer(file)
                 writer.writerow(["firstname", "lastname", "email", "password"])
 
-        # ---------- preload common images once ----------
-        # back button icon (used on multiple pages)
+        # iki pake if else soale button back kepake di byk page
         back_img_path = "assets/icon/button back.png"
         if os.path.isfile(back_img_path):
             back_img = Image.open(back_img_path).resize((30, 30))
             self.icon_back = ctk.CTkImage(light_image=back_img, size=(30, 30))
         else:
-            # fallback blank
             self.icon_back = None
 
-        # preload qris and metode images used on payment
+        # ini buat qris
         qris_path = "assets/bg/qris.png"
         metode_path = "assets/button/qris 2.png"
         if os.path.isfile(qris_path):
@@ -86,8 +84,7 @@ class TravelApp(ctk.CTk):
         else:
             self.metode_btn_img = None
 
-        # ---------- build pages (methods named as requested) ----------
-        # register / login / home / destination pages / payment
+        # semua page
         self.register_page()
         self.login_page()
         self.home_page()
@@ -98,11 +95,8 @@ class TravelApp(ctk.CTk):
         self.rinjani_page()
         self.payment_page()
 
-        # note: user asked not to force tkraise on register frame here,
-        # so we won't call self.reg_frame.tkraise() automatically.
-
     # ---------------------------
-    # Helper functions
+    # Def penting
     # ---------------------------
     def format_rupiah(self, angka: int) -> str:
         return f"Rp {angka:,.0f}".replace(",", ".")
@@ -117,7 +111,6 @@ class TravelApp(ctk.CTk):
         return harga, diskon, subtotal, potongan, total
 
     def activate_discount(self, dest):
-        """Called when user clicks a discount button on home page."""
         if dest in self.active_discounts:
             self.active_discounts[dest] = True
             messagebox.showinfo("Diskon Aktif", f"Diskon untuk {dest} berhasil diaktifkan!")
@@ -125,7 +118,7 @@ class TravelApp(ctk.CTk):
             messagebox.showinfo("Info", "Destinasi tidak punya diskon.")
 
     # ---------------------------
-    # Pages (methods named as requested)
+    # Register
     # ---------------------------
     def register_page(self):
         # ============ PAGE REGISTER ============
@@ -193,10 +186,16 @@ class TravelApp(ctk.CTk):
             save_data()
             open_login()
 
-        tombol_Register = ctk.CTkButton(self.reg_frame, width=555, height=55, text="Register ",
-                                        fg_color="#D9D9D9", border_color="#D9D9D9",
-                                        text_color="black", font=("Helvetica", 20, "bold"),
-                                        corner_radius=3, hover_color="#E1C5C5",
+        tombol_Register = ctk.CTkButton(self.reg_frame,
+                                        width=555, 
+                                        height=55, 
+                                        text="Register ",
+                                        fg_color="#D9D9D9", 
+                                        border_color="#D9D9D9",
+                                        hover_color="#E1C5C5",
+                                        text_color="black",
+                                        font=("Helvetica", 20, "bold"),
+                                        corner_radius=3,
                                         command=simpen_data)
         tombol_Register.place(x=1010, y=790)
 
@@ -214,11 +213,13 @@ class TravelApp(ctk.CTk):
                                      )
         login_button.place(x=1324, y=339)
 
+    # ---------------------------
+    # Login
+    # ---------------------------
     def login_page(self):
         # ================ LOGIN PAGE ================
         self.login_frame = ctk.CTkFrame(self, width=1920, height=1080)
         self.login_frame.grid(row=0, column=0, sticky="nsew")
-        # keep it hidden by default like original
         self.login_frame.lower()
 
         login_bg = ImageTk.PhotoImage(Image.open("assets/bg/login.png"))
@@ -236,7 +237,7 @@ class TravelApp(ctk.CTk):
                                            font=("Helvetica", 25), text_color="Black", corner_radius=2)
         self.login_password.place(x=585, y=605)
 
-        # back button uses preloaded self.icon_back
+        # back button 
         back_button = ctk.CTkButton(
             master=self.login_frame, width=10, height=10,
             image=self.icon_back,
@@ -352,8 +353,6 @@ class TravelApp(ctk.CTk):
         scroll_frame.update_idletasks()
         canvas_scroll.configure(scrollregion=canvas_scroll.bbox("all"))
 
-        # DISCOUNT BUTTONS (will activate discount only for respective destination)
-        # note: popup images are in assets/bg/showdisX.png per your confirmation (A)
         dis1 = ctk.CTkImage(Image.open("assets/button 2/disc1.png"), size=(450, 150))
         dis1_btn = ctk.CTkButton(
             self.home_frame,
@@ -403,7 +402,6 @@ class TravelApp(ctk.CTk):
         dis4_btn.place(x=1490, y=748)
 
     def show_discount_image(self, img_path):
-        # popup_frame reused across app
         try:
             popup_img = ctk.CTkImage(Image.open(img_path), size=(1920, 1080))
             self._popup_img = popup_img
@@ -558,21 +556,17 @@ class TravelApp(ctk.CTk):
         rin_tic.place(x=1325, y=890)
 
     def popup_components(self):
-        # create popup frame (used by show_discount_image)
         self.popup_frame = ctk.CTkFrame(self, width=900, height=200, fg_color="#050505")
-        # keep it hidden until used
+        # ttp sembunyi sampe di klik
         self.popup_frame.place_forget()
         self.popup_img_label = ctk.CTkLabel(self.popup_frame, text="")
         self.popup_img_label.pack()
-        # close button inside popup
         close_btn = ctk.CTkButton(self.popup_frame, text="✕", width=40, height=40,
                                  fg_color="#050505", hover_color="#050505", corner_radius=20,
                                  command=lambda: self.popup_frame.place_forget())
         close_btn.place(relx=0.95, rely=0.05, anchor="center")
 
     def payment_page(self):
-        # ensure popup components exist (called early)
-        # create before pages call show_discount_image
         self.popup_components()
 
         self.pay_frame = ctk.CTkFrame(master=self, width=1920, height=1080)
@@ -584,13 +578,13 @@ class TravelApp(ctk.CTk):
         pay = ctk.CTkLabel(self.pay_frame, image=bg_pay, text="")
         pay.place(x=0, y=0)
 
-        # QRIS panel (right)
+        # QRIS panel (kanan yang kosong sblm di klik)
         qris_label = ctk.CTkLabel(master=self.pay_frame, text="",
                                   width=687, height=559, fg_color="transparent", bg_color="#D9D9D9")
         qris_label.place(x=1151, y=250)
-        self.qris_label = qris_label  # store reference
+        self.qris_label = qris_label
 
-        # prepare qris image & metode image references already loaded in __init__
+        # button metode pembayaran
         self.btn_metode = ctk.CTkButton(self.pay_frame,
                                         image=self.metode_btn_img,
                                         text="",
@@ -601,7 +595,7 @@ class TravelApp(ctk.CTk):
                                         command=self.show_qris_on_panel)
         self.btn_metode.place(x=700, y=750)
 
-        # Labels and entries in payment page (kept same as original)
+        # Label di payment
         self.label_nama_value = ctk.CTkLabel(self.pay_frame, text="", font=("Helvetica", 24, "bold"),
                                              text_color="black", bg_color="#FFFFFF")
         self.label_nama_value.place(x=360, y=250)
@@ -618,12 +612,11 @@ class TravelApp(ctk.CTk):
                                              textvariable=self.jumlah_var)
         self.entry_jumlah_pay.place(x=360, y=410)
 
-        # date entry uses yyyy-mm-dd and DateEntry mindate today (kept)
+        # date entry 
         self.date_entry = DateEntry(self.pay_frame, width=10, height=60, background="#385FAA",
                                    foreground='white', borderwidth=2, date_pattern="yyyy-mm-dd",
                                    font=('ITC Avant Garde Gothic', 25, 'bold'), mindate=date.today())
         self.date_entry.place(x=360, y=473)
-        # set default date to today's date (matching pattern)
         self.date_entry.set_date(date.today())
 
         # rincian label
@@ -635,7 +628,7 @@ class TravelApp(ctk.CTk):
         # bind changes
         self.jumlah_var.trace_add("write", lambda *a: self.update_rincian_pembayaran())
 
-        # cek / save button
+        # cek / save button (save ke history.csv)
         cek_btn = ctk.CTkButton(self.pay_frame, text="Cek", width=165, height=81,
                                 font=("Helvetica", 28, "bold"), fg_color="#E78989",
                                 hover_color="#D46F6F", text_color="black", corner_radius=20,
@@ -710,10 +703,8 @@ class TravelApp(ctk.CTk):
             writer.writerow([nama, dest, qty, tgl, harga, total])
 
         messagebox.showinfo("Berhasil", "Tiket berhasil disimpan ke history!")
-        # reset discount for that destination after checkout
         if dest in self.active_discounts:
             self.active_discounts[dest] = False
-        # go back to home
         self.home_frame.tkraise()
 
     # -------------
@@ -729,6 +720,4 @@ class TravelApp(ctk.CTk):
 
 if __name__ == "__main__":
     app = TravelApp()
-    # Note: you requested NOT to force tkraise on register frame here.
-    # So the window will open but pages default order depends on creation.
     app.mainloop()
