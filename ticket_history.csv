@@ -1,0 +1,9 @@
+nama,destinasi,jumlah_tiket,tanggal,harga_satuan,total_bayar
+d 1,Borobudur,1,09-12-2025,150000,150000
+-,Candi Prambanan,1,2025-12-19,120000,120000
+-,Borobudur,1,09-12-2025,150000,150000
+-,Tanah Lot,1,10-12-2025,200000,200000
+-,Raja Ampat,1,10-12-2025,500000,500000
+-,Borobudur,9,10-12-2025,150000,1350000
+-,Tanah Lot,8,12-12-2025,200000,1360000.0
+c c,Borobudur,2,2025-12-24,150000,270000.0
